@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://wadl.dev.java.net/2009/02 http://wadl.dev.java.net/2009/02/wadl.xsd"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://wadl.dev.java.net/2009/02">
+    <grammars>
+        <include href="http://www.w3.org/2001/XMLSchema.xsd" />
+    </grammars>
+    <resources base="http://localhost:400">
+        <resource path="/record">
+            <method name="GET" id="get-record">
+                <request>
+                    <param name="id_nodo" style="query" type="xsd:string" required="true" />
+                    <param name="temperatura" style="query" type="xsd:float" required="true" />
+                    <param name="humedad" style="query" type="xsd:float" required="true" />
+                    <param name="co2" style="query" type="xsd:int" required="true" />
+                    <param name="volatiles" style="query" type="xsd:int" required="true" />
+                </request>
+                <response status="500">
+                    <representation mediaType="text/plain"
+                        element="yn:ErrorServidorGet" />
+                </response>
+            </method>
+            <method name="POST" id="post-record">
+                <request>
+                    <representation mediaType="application/json">
+                        <param name="id_nodo" style="query" type="xsd:string" required="true" />
+                        <param name="temperatura" style="query" type="xsd:float" required="true" />
+                        <param name="humedad" style="query" type="xsd:float" required="true" />
+                        <param name="co2" style="query" type="xsd:int" required="true" />
+                        <param name="volatiles" style="query" type="xsd:int" required="true" />
+                    </representation>
+                </request>
+                <response status="500">
+                    <representation mediaType="text/plain"
+                        element="yn:ErrorServidorGet" />
+                </response>
+            </method>
+        </resource>
+
+        <resource path="/wadl">
+            <method name="GET" id="get-wadl">
+                <response status="200">
+                    <representation mediaType="application/xml"
+                        element="yn:WADLDescription" />
+                </response>
+                <response status="500">
+                    <representation mediaType="text/plain"
+                        element="yn:ServerError" />
+                </response>
+            </method>
+        </resource>
+        <response status="403">
+            <representation mediaType="text/plain"
+                element="yn:AccesoDenegado" />
+        </response>
+        <response status="429">
+            <representation mediaType="text/plain"
+                element="yn:TockenBucket" />
+        </response>
+    </resources>
+</application>

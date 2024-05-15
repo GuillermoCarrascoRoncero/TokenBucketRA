@@ -1,16 +1,27 @@
 const express = require("express");
-const TokenBucket = require("./TokenBucket");
-const app = express();
-const axios = require("axios");
 const bodyParser = require("body-parser");
-var fs = require('fs');
+const axios = require("axios");
+const fs = require('fs');
 const path = require("path");
+const IPManager = require("./IPManager"); 
+const TokenBucket = require("./TokenBucket");
+
+const app = express();
 
 const tokenBucket = new TokenBucket(100, 10 / 60);
 const wadlPath = path.join(__dirname,'docs','api-description.xml');
+const ipTracker = new IPManager(100, 30000); 
 
+<<<<<<< Updated upstream
 const whitelist = ['::1', '::ffff:127.0.0.1'];
 const blacklist = ['1.2.3.4', '5.6.7.8'];
+=======
+ipTracker.setWhiteList('::1');
+ipTracker.setWhiteList('::ffff:127.0.0.1');
+ipTracker.setWhiteList('::ffff:10.0.3.26');
+
+var filter = false;
+>>>>>>> Stashed changes
 
 app.use(bodyParser.json());
 
@@ -19,21 +30,21 @@ app.use((req, res, next) => {
   
   //console.log("Dirección IP del cliente:", clientIp);
 
-  if (!whitelist.includes(clientIp)) {
+  filter = ipTracker.trackRequest(clientIp);
+
+  if (!ipTracker.getWhiteList(clientIp)) {
     return res.status(403).send('Acceso no autorizado');
   }
 
-  if (blacklist.includes(clientIp)) {
-    return res.status(403).send('Acceso bloqueado');
+  if (ipTracker.getBlockedIPs(clientIp)) {
+    return res.status(403).send('Acceso bloqueado. IP bloqueada');
   }
 
   if (!tokenBucket.tryConsume(1)) {
     return res.status(429).send("Demasiadas solicitudes. Intente nuevamente más tarde.");
   }
-
   next();
 });
-
 
 app.get("/record", async (req, res) => {
   try {

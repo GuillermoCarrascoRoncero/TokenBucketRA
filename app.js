@@ -12,23 +12,18 @@ const tokenBucket = new TokenBucket(100, 10 / 60);
 const wadlPath = path.join(__dirname,'docs','api-description.xml');
 const ipTracker = new IPManager(100, 30000); 
 
-<<<<<<< Updated upstream
-const whitelist = ['::1', '::ffff:127.0.0.1'];
-const blacklist = ['1.2.3.4', '5.6.7.8'];
-=======
 ipTracker.setWhiteList('::1');
 ipTracker.setWhiteList('::ffff:127.0.0.1');
 ipTracker.setWhiteList('::ffff:10.0.3.26');
 
 var filter = false;
->>>>>>> Stashed changes
 
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   const clientIp = req.ip;
   
-  //console.log("Dirección IP del cliente:", clientIp);
+  console.log("Dirección IP del cliente:", clientIp);
 
   filter = ipTracker.trackRequest(clientIp);
 
@@ -48,7 +43,7 @@ app.use((req, res, next) => {
 
 app.get("/record", async (req, res) => {
   try {
-    const response = await axios.get("http://localhost:80/record", {
+    const response = await axios.get("http://localhost:3001/record", {
       params: req.query, 
     });
     res.send(response.data);
@@ -60,7 +55,7 @@ app.get("/record", async (req, res) => {
 
 app.post("/record", async (req, res) => {
   try {
-    const response = await axios.post("http://localhost:80/record", req.body);
+    const response = await axios.post("http://localhost:3001/record", req.body);
     res.send(response.data);
   } catch (error) {
     console.error(error);

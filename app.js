@@ -35,7 +35,7 @@ app.use((req, res, next) => {
     return res.status(403).send('Acceso bloqueado. IP bloqueada');
   }
 
-  if (!tokenBucket.tryConsume(1)) {
+  if (!tokenBucket.consume(1)) {
     return res.status(429).send("Demasiadas solicitudes. Intente nuevamente más tarde.");
   }
   next();

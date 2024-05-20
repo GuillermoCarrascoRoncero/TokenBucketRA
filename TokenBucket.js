@@ -1,26 +1,26 @@
 class TokenBucket {
-    constructor(capacity, rate) {
-        this.capacity = capacity; 
-        this.tokens = capacity;   
-        this.rate = rate;         
-        this.lastRefill = Date.now();
+    constructor(capacidad, rate) {
+        this.capacidad = capacidad;
+        this.tokens = capacidad;
+        this.rate = rate;
+        this.last = Date.now();
     }
 
-    tryConsume(tokens) {
-        this.refill();
+    async consume(tokens) {
+        await this.addToken();
         if (this.tokens >= tokens) {
             this.tokens -= tokens;
             return true;
         }
-        return false; 
+        return false;
     }
 
-    refill() {
+    async addToken() {
         const now = Date.now();
-        const elapsedTime = (now - this.lastRefill) / 1000; 
+        const elapsedTime = (now - this.last) / 1000;
         const newTokens = elapsedTime * this.rate;
-        this.tokens = Math.min(this.capacity, this.tokens + newTokens); 
-        this.lastRefill = now; 
+        this.tokens = Math.min(this.capacidad, this.tokens + newTokens);
+        this.last = now;
     }
 }
 
